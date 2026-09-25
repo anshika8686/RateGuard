@@ -1,6 +1,9 @@
-const express=require("express")
+const express=require("express");
+const connectToDb = require("./config/mongoose");
 const app=express()
 app.use(express.json())
+
+connectToDb()
 
 app.get("/", (req, res) => {
     res.status(200).json({

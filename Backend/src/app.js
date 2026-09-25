@@ -17,4 +17,12 @@ app.get("/",(req,res)=>{
         message:"RateGuard Backend is running"
     })
 })
+
+app.get("/health", (req, res) => {
+    res.status(200).json({
+        success: true,
+        message: "Backend is healthy"
+    });
+});
+
 module.exports=app

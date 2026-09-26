@@ -33,6 +33,5 @@ const apikeySchema=new mongoose.Schema({
     }
 });
 
-const apiModel=mongoose.model("ApiKey", apiKeySchema);
-
+const apiModel=mongoose.model("ApiKey",apikeySchema);
 module.exports = apiModel

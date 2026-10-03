@@ -1,9 +1,11 @@
 const express=require("express");
 const connectToDb = require("./config/mongoose");
+const connecttoredis=require("./config/redis.connect")
 const app=express()
 app.use(express.json())
 
 connectToDb()
+connecttoredis()
 
 const apikeyRouter=require('../src/routes/apikey.route')
 app.use('/api',apikeyRouter)

@@ -39,9 +39,6 @@ if tokens >= 1 then
     allowed = 1 --allowed
 end
 
-
-
-
 -- Save the updated bucket state in Redis
 redis.call(
     "HSET",

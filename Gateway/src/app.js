@@ -8,7 +8,10 @@ connectToDb()
 connecttoredis()
 
 const apikeyRouter=require('../src/routes/apikey.route')
+const proxyRouter=require("../src/routes/proxy.route")
+
 app.use('/api',apikeyRouter)
+app.use('/api',proxyRouter)
 
 app.get("/", (req, res) => {
     res.status(200).json({

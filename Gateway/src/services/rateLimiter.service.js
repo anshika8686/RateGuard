@@ -9,7 +9,7 @@ const scriptPath=path.join(__dirname,
 ); //reads the script and tells whether the request is allowed or not
 
 const tokenBucketScript = fs.readFileSync(scriptPath, "utf8");
-async function checkRateLimit(client) {
+async function checkRateLimit(client) { //
     const capacity=client.rateLimit;
     const refillRate=capacity/60;
     const now= Date.now()

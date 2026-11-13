@@ -3,7 +3,7 @@ const ApiModel=require("../models/apiKey.model.js")
 
 const apikeyAuth=async(req,res,next)=>{
     try{
-        console.log("middleware hit")
+        console.log("apikeyuth middleware hit")
         const apiKey=req.header("x-api-key")
         if(!apiKey){
             return res.status(400).json({

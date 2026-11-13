@@ -1,6 +1,7 @@
 const {checkRateLimit}=require("../services/rateLimiter.service")
 async function rateLimit(req,res,next){
     const result=await checkRateLimit(req.client)
+    console.log("rate Limit middleware hit")
     res.set("X-RateLimit-Limit", String(req.client.rateLimit));
     res.set("X-RateLimit-Remaining", String(result.remainingTokens));
     try{

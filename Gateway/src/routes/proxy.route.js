@@ -3,6 +3,7 @@ const proxyRouter=express.Router()
 
 const apikeyAuth=require("../middleware/apiKeyauth")
 const rateLimit=require("../middleware/rateLimit.middleware")
+const rateLogger=require("../middleware/rateLogger.middleware")
 
 const proxyController=require("../controllers/proxy.controller")
 
@@ -15,5 +16,5 @@ const proxyController=require("../controllers/proxy.controller")
 //     })
 // })
 
-proxyRouter.get("/data",apikeyAuth,rateLimit,proxyController)
+proxyRouter.get("/data",rateLogger,apikeyAuth,rateLimit,proxyController)
 module.exports=proxyRouter

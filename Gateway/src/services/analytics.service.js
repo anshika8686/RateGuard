@@ -73,4 +73,14 @@ async function getAnalyticsOverview() {
     failedRequests: 0
 };
 }
-module.exports={getAnalyticsOverview}
+
+async function getRecentAnalytics(){
+    const requests=await RequestLogModel.find() //return all the documents
+    .sort({createdAt:-1}) //sort from latest to oldest
+    .limit(10)
+
+    return requests
+}
+module.exports={
+    getAnalyticsOverview,
+    getRecentAnalytics}

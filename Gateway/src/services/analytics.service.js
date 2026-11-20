@@ -81,6 +81,44 @@ async function getRecentAnalytics(){
 
     return requests
 }
+
+async function getweekAnalytics(){
+    const sevenDaysAgo = new Date(
+        Date.now() - 7 * 24 * 60 * 60 * 1000
+    );
+
+    const result = await RequestLogModel.aggregate([
+        {
+            $match: { //filtering
+                createdAt: {
+                    $gte: sevenDaysAgo
+                }
+            }
+        },
+        {
+            $group: { //grouping them
+                _id: {
+                    $dateToString: {
+                        format: "%Y-%m-%d",
+                        date: "$createdAt"
+                    }
+                },
+                totalRequests: {
+                    $sum: 1
+                }
+            }
+        },
+        {
+            $sort: {
+                _id: 1 //in ascending order
+            }
+        }
+    ]);
+
+    return result;
+}
+
 module.exports={
     getAnalyticsOverview,
-    getRecentAnalytics}
+    getRecentAnalytics,
+    getweekAnalytics}

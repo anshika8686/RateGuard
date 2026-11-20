@@ -1,5 +1,4 @@
-const {getAnalyticsOverview}=require("../services/analytics.service")
-const {getRecentAnalytics}=require("../services/analytics.service")
+const {getAnalyticsOverview, getRecentAnalytics, getweekAnalytics}=require("../services/analytics.service")
 async function getAnalyticsOverviewController(req,res){
     try{
        const result=await getAnalyticsOverview();
@@ -22,18 +21,36 @@ async function getRecentAnalyticsController(req,res){
         const result=await getRecentAnalytics()
         return res.status(200).json({
             success: true,
-            result 
+            data:result 
         })
     }
     catch(error){
         console.error("Recent Analytics overview error:", error.message);
         return res.status(500).json({
             success: false,
-            message: "Failed to fetch analytics overview"
+            message: "Failed to fetch recent analytics overview"
         })
     }
 }
+
+async function getWeekAnalyticsController(req,res){
+    const result=await getweekAnalytics()
+    try{
+        return res.status(200).json({
+        success:true,
+        data:result
+    })}
+    catch(error){
+        console.error("Recent Analytics overview error:", error.message);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to fetch weekly analytics overview"
+        })
+    }
+}
+
 module.exports={
     getAnalyticsOverviewController,
-    getRecentAnalyticsController
+    getRecentAnalyticsController,
+    getWeekAnalyticsController
 }

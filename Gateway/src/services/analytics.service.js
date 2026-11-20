@@ -118,7 +118,37 @@ async function getweekAnalytics(){
     return result;
 }
 
+async function getTopKeys() {
+    const result = await RequestLogModel.aggregate([
+        {
+            $match: {
+                clientId: { $exists: true, $ne: null } //only show for valid clientId
+            }
+        },
+
+        {
+            $group: {
+                _id: "$clientId",
+                totalRequests: { $sum: 1 }
+            }
+        },
+
+        {
+            $sort: {
+                totalRequests: -1
+            }
+        },
+
+        {
+            $limit: 5
+        }
+    ]);
+
+    return result;
+}
+
 module.exports={
     getAnalyticsOverview,
     getRecentAnalytics,
-    getweekAnalytics}
+    getweekAnalytics,
+    getTopKeys}

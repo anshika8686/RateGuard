@@ -123,11 +123,41 @@ const updateApiKeyController=async(req,res)=>{
 
 }
 
-const deleteApiKeyController=async(req,res)=>{
-    
-}
+
+const deleteApiKeyController = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const deletedApiKey = await ApiKeyModel.findOneAndDelete({
+            _id: id,
+            userId: req.user.id
+        });
+
+        if (!deletedApiKey) {
+            return res.status(404).json({
+                success: false,
+                message: "API key not found"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "API key deleted successfully"
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Failed to delete API key"
+        });
+    }
+};
+
 module.exports = {
     createApiKeyController,
     fetchApiKeyController,
     updateApiKeyController,
+    deleteApiKeyController
 };

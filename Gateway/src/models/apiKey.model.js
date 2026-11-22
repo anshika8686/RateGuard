@@ -1,11 +1,14 @@
 const mongoose=require('mongoose')
-
 const apikeySchema=new mongoose.Schema({
-    username: {
-        type: String,
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"Users",
         required: true,
     },
-
+    name:{
+        type:String,
+        required:true
+    },
     keyHash: {
         type: String,
         required: true,

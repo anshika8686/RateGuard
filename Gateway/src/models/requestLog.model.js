@@ -2,7 +2,7 @@ const mongoose=require('mongoose')
 const requestLogSchema= new mongoose.Schema({
     clientId:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"apiModel",
+        ref:"apiKey",
     },
     endpoint:{
         type:String,

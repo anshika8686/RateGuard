@@ -2,8 +2,10 @@ import { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import InputField from "../common/InputField";
 import Button from "../common/Button";
+import { useNavigate } from "react-router-dom";
 
 function SignupForm() {
+    const navigate=useNavigate()
     const { signup, loading } = useAuth();
     const [formData, setFormData] = useState({
         username: "",
@@ -54,6 +56,8 @@ function SignupForm() {
         setError(result.message);
         return;
     }
+
+    navigate("/dashboard")
 
     console.log("Signup successful:", result.data);
   };

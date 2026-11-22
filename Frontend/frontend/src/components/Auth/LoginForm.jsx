@@ -3,8 +3,10 @@ import { useState } from "react";
 import InputField from "../common/InputField";
 import Button from "../common/Button";
 import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 function LoginForm() {
+  const navigate=useNavigate()
   const { login, loading } = useAuth();
 
   const [formData, setFormData] = useState({
@@ -40,6 +42,7 @@ function LoginForm() {
       setError(result.message);
       return;
     }
+    navigate("/dashboard")
 
     console.log("Login successful:", result.data);
   };
@@ -79,3 +82,4 @@ function LoginForm() {
 }
 
 export default LoginForm;
+

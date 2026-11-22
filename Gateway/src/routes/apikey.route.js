@@ -6,7 +6,7 @@ const identifyUser=require("../middleware/userAuth.middleware.js")
 
 apikeyRouter.post('/createkeys',identifyUser,ApiKeyController.createApiKeyController)
 apikeyRouter.get('/fetchkeys',identifyUser,ApiKeyController.fetchApiKeyController)
-
+apikeyRouter.patch('/updatekeys/:id',identifyUser,ApiKeyController.updateApiKeyController)
 
 //creation of api key
 module.exports=apikeyRouter

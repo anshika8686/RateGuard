@@ -71,7 +71,63 @@ const fetchApiKeyController=async(req,res)=>{
     }
 };
 
+const updateApiKeyController=async(req,res)=>{
+     try {
+        const { id } = req.params;
+        const { active } = req.body;
+
+        // Validate active status
+        if (typeof active !== "boolean") {
+            return res.status(400).json({
+                success: false,
+                message: "Active must be true or false"
+            });
+        }
+
+        // Find and update only the logged-in user's API key
+        const updatedApiKey = await ApiKeyModel.findOneAndUpdate(
+            {
+                _id: id,
+                userId: req.user.id
+            },
+            {
+                $set: { active: active }//set active with the new value
+            },
+            {
+                new: true,
+                runValidators: true
+            }
+        ).select("_id name keyPrefix rateLimit active createdAt");
+
+        if (!updatedApiKey) {
+            return res.status(404).json({
+                success: false,
+                message: "API key not found"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "API key status updated successfully",
+            apiKey: updatedApiKey
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Failed to update API key"
+        });
+    }
+
+}
+
+const deleteApiKeyController=async(req,res)=>{
+    
+}
 module.exports = {
     createApiKeyController,
     fetchApiKeyController,
+    updateApiKeyController,
 };

@@ -2,56 +2,80 @@ import { useState } from "react";
 
 import InputField from "../common/InputField";
 import Button from "../common/Button";
+import { useAuth } from "../../hooks/useAuth";
 
 function LoginForm() {
+  const { login, loading } = useAuth();
 
-    const [formData, setFormData] = useState({
-        email: "",
-        password: ""
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.email.trim() || !formData.password) {
+      setError("Email and password are required.");
+      return;
+    }
+
+    setError("");
+
+    const result = await login({
+      email: formData.email,
+      password: formData.password,
     });
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
+    if (!result.success) {
+      setError(result.message);
+      return;
+    }
 
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value
-        }));
-    };
+    console.log("Login successful:", result.data);
+  };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+  return (
+    <form onSubmit={handleSubmit} className="space-y-5">
+      {error && (
+        <div className="flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+          <span>⚠</span>
+          <p>{error}</p>
+        </div>
+      )}
 
-        console.log("Login Data:", formData);
-    };
+      <InputField
+        label="Email Address"
+        name="email"
+        type="email"
+        placeholder="you@example.com"
+        value={formData.email}
+        onChange={handleChange}
+      />
 
-    return (
-        <form onSubmit={handleSubmit} className="space-y-5">
+      <InputField
+        label="Password"
+        name="password"
+        type="password"
+        placeholder="Enter your password"
+        value={formData.password}
+        onChange={handleChange}
+      />
 
-            <InputField
-                label="Email Address"
-                name="email"
-                type="email"
-                placeholder="you@example.com"
-                value={formData.email}
-                onChange={handleChange}
-            />
-
-            <InputField
-                label="Password"
-                name="password"
-                type="password"
-                placeholder="Enter your password"
-                value={formData.password}
-                onChange={handleChange}
-            />
-
-            <Button type="submit">
-                Sign In
-            </Button>
-
-        </form>
-    );
+      <Button type="submit" loading={loading}>
+        Sign In
+      </Button>
+    </form>
+  );
 }
 
 export default LoginForm;

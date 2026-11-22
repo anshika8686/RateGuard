@@ -1,5 +1,5 @@
 import { createContext, useState } from "react";
-import { signupUser } from "../services/authService";
+import { signupUser,loginUser } from "../services/authService";
 
 export const AuthContext = createContext();
 
@@ -31,12 +31,37 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const login = async (credentials) => {
+    try {
+        setLoading(true);
+
+        const data = await loginUser(credentials);
+
+        setUser(data.user);
+
+        return {
+            success: true,
+            data
+        };
+
+    } catch (error) {
+        return {
+            success: false,
+            message: error.response?.data?.message || "Login failed"
+        };
+
+    } finally {
+        setLoading(false);
+    }
+};
+
     return (
         <AuthContext.Provider
             value={{
                 user,
                 loading,
-                signup
+                signup,
+                login
             }}
         >
             {children}

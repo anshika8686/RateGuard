@@ -2,8 +2,12 @@ const express=require('express')
 const apikeyRouter=express.Router()
 
 const ApiKeyController=require("../controllers/apiKey.controller.js")
+const identifyUser=require("../middleware/userAuth.middleware.js")
 
-apikeyRouter.post('/keys',ApiKeyController.createApiKeyController)
+apikeyRouter.post('/createkeys',identifyUser,ApiKeyController.createApiKeyController)
+apikeyRouter.get('/fetchkeys',identifyUser,ApiKeyController.fetchApiKeyController)
+
+
 //creation of api key
 module.exports=apikeyRouter
 

@@ -1,7 +1,6 @@
 const crypto=require('crypto')
 const generateKey=()=>{
      const randomPart = crypto.randomBytes(32).toString("base64url"); //gives a 256 bit secret key
-     console.log(`fg_${randomPart}`)
      return `fg_${randomPart}`
 }
 

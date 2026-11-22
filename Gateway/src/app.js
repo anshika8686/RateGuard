@@ -2,6 +2,7 @@ const express=require("express");
 const connectToDb = require("./config/mongoose");
 const connecttoredis=require("./config/redis.connect")
 const cookieParser = require("cookie-parser");
+const cors=require("cors")
 
 const app=express()
 app.use(express.json())
@@ -10,6 +11,11 @@ connectToDb()
 connecttoredis()
 
 app.use(cookieParser());
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials:true
+}))
+
 const apikeyRouter=require('../src/routes/apikey.route')
 const proxyRouter=require("../src/routes/proxy.route")
 const analyticRouter=require("../src/routes/analytics.route")

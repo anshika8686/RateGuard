@@ -1,4 +1,3 @@
-
 const path = require("path");
 const fs = require("fs");
 
@@ -9,33 +8,13 @@ require("dotenv").config({
 const redisClient = require("../src/config/redis.client");
 
 async function main() {
+    const testKey = `bucket:test-${Date.now()}`;
+
     try {
-        // Step 1: Verify that the Redis URL is loaded
-        console.log(
-            "Redis URL loaded:",
-            Boolean(process.env.REDIS_URL)
-        );
-
-        if (!process.env.REDIS_URL) {
-            throw new Error(
-                "REDIS_URL is missing from gateway/.env"
-            );
-        }
-
-        // Print only the hostname, never the credentials
-        console.log(
-            "Redis host:",
-            new URL(process.env.REDIS_URL).hostname
-        );
-
-        // Step 2: Connect to Redis
         if (!redisClient.isOpen) {
             await redisClient.connect();
         }
 
-        console.log("Redis connected successfully!");
-
-        // Step 3: Load the Lua script
         const scriptPath = path.join(
             __dirname,
             "..",
@@ -46,42 +25,50 @@ async function main() {
 
         const script = fs.readFileSync(scriptPath, "utf8");
 
-        // Step 4: Create a unique test bucket
-        const testKey = `bucket:test-${Date.now()}`;
+       const fixedNow = Date.now();
 
-        // Step 5: Execute the Token Bucket script
-        const result = await redisClient.eval(script, {
-            keys: [testKey],
-            arguments: [
-                "5",                // Capacity
-                "1",                // Refill rate: 1 token/second
-                String(Date.now()), // Current timestamp in milliseconds
-                "10"                // TTL: 10 seconds for this test
-            ]
-        });
+async function makeRequest(now = Date.now()) {
+    return redisClient.eval(script, {
+        keys: [testKey],
+        arguments: [
+            "3",
+            "1",
+            String(now),
+            "10"
+        ]
+    });
+}
 
-        // Step 6: Display the result
         console.log("\n--- Token Bucket Test ---");
-        console.log("Allowed:", Number(result[0]) === 1);
-        console.log("Remaining tokens:", Number(result[1]));
 
-        // Step 7: Verify the state saved in Redis
-        const savedBucket = await redisClient.hGetAll(testKey);
+        for (let i = 1; i <= 4; i++) {
+            const result = await makeRequest(fixedNow);
 
-        console.log("Saved Redis bucket:", savedBucket);
+            console.log(
+                `Request ${i}:`,
+                Number(result[0]) === 1 ? "ALLOWED" : "REJECTED",
+                "| Remaining tokens:",
+                result[1]
+            );
+        }
 
-        // Step 8: Clean up the test key
-        await redisClient.del(testKey);
-        console.log("Test bucket cleaned up.");
+        console.log("\nWaiting 1.2 seconds for refill...");
+        await new Promise(resolve => setTimeout(resolve, 1200));
 
+        const refillResult = await makeRequest();
+
+        console.log(
+            "After refill:",
+            Number(refillResult[0]) === 1 ? "ALLOWED" : "REJECTED",
+            "| Remaining tokens:",
+            refillResult[1]
+        );
     } catch (error) {
         console.error("Token bucket test failed:", error.message);
     } finally {
-        // Close this test process's Redis connection
         if (redisClient.isOpen) {
             await redisClient.quit();
         }
     }
 }
-
 main();

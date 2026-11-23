@@ -34,8 +34,9 @@ async function getRecentAnalyticsController(req,res){
 }
 
 async function getWeekAnalyticsController(req,res){
-    const result=await getweekAnalytics()
+    
     try{
+        const result=await getweekAnalytics()
         return res.status(200).json({
         success:true,
         data:result
@@ -50,8 +51,8 @@ async function getWeekAnalyticsController(req,res){
 }
 
 async function getTopKeysController(req,res){
-    const result= await getTopKeys()
-    try{
+        try{
+        const result= await getTopKeys()
         return res.status(200).json({
             success:true,
             data:result

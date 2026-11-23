@@ -20,11 +20,13 @@ const apikeyRouter=require('../src/routes/apikey.route')
 const proxyRouter=require("../src/routes/proxy.route")
 const analyticRouter=require("../src/routes/analytics.route")
 const authRouter=require("../src/routes/auth.route")
+const dashboardRouter=require("../src/routes/dashboard.route")
 
 app.use('/api',apikeyRouter)
 app.use('/api',proxyRouter)
 app.use('/api/analytics',analyticRouter)
 app.use('/api/auth',authRouter)
+app.use("/api/dashboard", dashboardRouter);
 
 app.get("/", (req, res) => {
     res.status(200).json({

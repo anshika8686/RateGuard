@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import { signupUser, loginUser, getMe } from "../services/authService";
+import { signupUser, loginUser, getMe, logoutUser } from "../services/authService";
 
 export const AuthContext = createContext();
 
@@ -77,6 +77,19 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const logout = async () => {
+    try {
+        await logoutUser();
+        setUser(null);
+        return { success: true };
+    } catch (error) {
+        return {
+            success: false,
+            message: error.response?.data?.message || "Logout failed",
+        };
+    }
+};
+
   return (
     <AuthContext.Provider
       value={{
@@ -85,6 +98,7 @@ export const AuthProvider = ({ children }) => {
         signup,
         login,
         fetchUser,
+        logout
       }}
     >
       {children}
